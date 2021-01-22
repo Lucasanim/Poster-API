@@ -8,10 +8,12 @@ from core.models import Followers, Follows
 
 class UserSerializer(serializers.ModelSerializer):
     """Serializer for the users object"""
+    # follow = serializers.CharField(source='category.name')
 
     class Meta:
         model = get_user_model()
-        fields = ('email', 'first_name', 'last_name', 'password')
+        fields = ('email', 'first_name', 'last_name', 'password', 'avatar', 'id', 'his_follows', 'his_followers', 'follow', 'follower')
+        read_only_fields = ('id','his_followers', 'his_follows')
         extra_kwargs = {'password':{'write_only':True, 'min_length': 8}}
 
     def create(self, validated_data):
@@ -60,3 +62,12 @@ class AuthTokenSerializer(serializers.Serializer):
             raise serializers.ValidationError(msg, code='authentication')
         attrs['user'] = user
         return attrs
+
+
+class UserImageSerializer(serializers.ModelSerializer):
+    """Serializer for uploading images to user"""
+
+    class Meta:
+        model = get_user_model()
+        fields = ('id', 'avatar')
+        read_only_fields = ('id',)

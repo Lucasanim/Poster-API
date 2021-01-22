@@ -6,6 +6,7 @@ from post import views
 router = DefaultRouter()
 router.register('posts', views.PostViewSet)
 router.register('my-posts', views.MyPostViewSet)
+router.register('users-posts', views.UsersPostsViewSet)
 
 app_name = 'post'
 
