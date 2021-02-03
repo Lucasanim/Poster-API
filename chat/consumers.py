@@ -171,7 +171,10 @@ class ChatConsumer(GenericAsyncAPIConsumer):
                             'thread': self.room_name,
                             'seen': False,
                             'text': msg.text,
-                            'owner': msg.owner.username
+                            'hour': str(msg.created),
+                            'owner': msg.owner.username,
+                            'is_mine': bool(msg.owner != self.user),
+                            'owner_avatar': str(msg.owner.avatar)
                             }
             }
         )
@@ -202,8 +205,11 @@ class ChatConsumer(GenericAsyncAPIConsumer):
             msgs.append({
                 'seen': False,
                 'text': i.text,
+                'hour': str(i.created),
                 'owner': i.owner.username,
-                'thread': self.current_thread.id
+                'thread': self.current_thread.id,
+                'is_mine': i.owner == self.user,
+                'owner_avatar': str(i.owner.avatar)
             })
         print('MENSAGES:', msgs)
         return msgs

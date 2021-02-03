@@ -14,40 +14,30 @@ class ReturnThreads(APIView):
     def get(self, request, format=None):
 
         threads = Thread.objects.filter(users=request.user)
-        # msgs = []
-        # sub_msg = []
-        # for l in threads:
-        #     for i in l.messages.all():
-        #         # msgs.append(i.text)
-        #         sub_msg.append({
-        #             'seen': False,
-        #             'text': i.text,
-        #             'owner': i.owner.username,
-        #             'thread': l.id
-        #         })
-        #     msgs.append({
-        #         'type': 'thread',
-        #         'id': l.id,
-        #         'data': sub_msg
-        #     })
-        #     sub_msg = []
-        # print('MENSAGES:', msgs)
-        # return Response(msgs)
         ths = []
+        users = []
+        avatar = ''
         for i in threads:
-            ths.append(i.id)
+            for l in i.users.all():
+                users.append(l.username)
+                if len(i.users.all()) < 3 and l.id != request.user.id:
+                    avatar = str(l.avatar)
+            ths.append({
+                'id': i.id,
+                'users': users,
+                'avatar': avatar
+            })
+            users=[]
         return Response(ths)
 
-class ReturnUser(APIView):
+
+class CreateThreadAPIView(APIView):
     authentication_classes = [authentication.TokenAuthentication]
     permission_classes = [permissions.IsAuthenticated]
-    def get(self, request, format=None):
-        user = get_user_model().objects.get(id=request.user.id)
-        print('user:', user)
-
-        response = {
-            'id': user.id,
-            'username': user.username
-        }
-
-        return Response(response)
+    def post(self, request, format=None):
+        other_user = get_user_model().objects.get(id=request.data.get('id'))
+        print('OT:', other_user)
+        thread = Thread.objects.create()
+        thread.users.add(other_user)
+        thread.users.add(request.user)
+        return Response({'id': thread.id})

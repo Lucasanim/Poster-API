@@ -145,6 +145,7 @@ class Post(models.Model):
 
 class Thread(models.Model):
     # thread for chat group
+    name = models.CharField(max_length=255, blank=True, null=True)
     users = models.ManyToManyField(settings.AUTH_USER_MODEL)
     messages = models.ManyToManyField('Message')
 
@@ -155,3 +156,4 @@ class Message(models.Model):
         on_delete=models.CASCADE
     )
     text = models.TextField()
+    created = models.DateTimeField(auto_now_add=True)
