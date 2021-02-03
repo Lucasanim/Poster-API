@@ -74,8 +74,8 @@ class SearchUsersViewSet(viewsets.GenericViewSet,
         qs = self.request.query_params.get('qs')
 
         if qs:
-            # queryset = queryset.filter(Q(first_name__icontains=qs) | Q(last_name__icontains=qs))
-            queryset = queryset.filter(Q(first_name__startswith=qs) | Q(last_name__startswith=qs))
+            queryset = queryset.filter(Q(first_name__icontains=qs) | Q(last_name__icontains=qs) | Q(username__icontains=qs))
+            # queryset = queryset.filter(Q(first_name__startswith=qs) | Q(last_name__startswith=qs))
         queryset = queryset.exclude(id = self.request.user.id)
         return queryset
 
